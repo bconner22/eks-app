@@ -1,11 +1,12 @@
 #!/bin/bash
+export CLUSTER_NAME=$1
 cat << EOF > ekscluster.yaml
 ---
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: eksworkshop-eksctl
+  name: ${CLUSTER_NAME}
   region: ${AWS_REGION}
   version: "1.17"
 
@@ -16,13 +17,12 @@ managedNodeGroups:
   desiredCapacity: 3
   ssh:
     allow: true
-    publicKeyName: eksworkshop
-
+    publicKeyName: ${CLUSTER_NAME}
 
 secretsEncryption:
   keyARN: ${MASTER_ARN}
 EOF
 eksctl create cluster -f ekscluster.yaml
-STACK_NAME=$(eksctl get nodegroup --cluster eks-dev -o json | jq -r '.[].StackName')
+STACK_NAME=$(eksctl get nodegroup --cluster ${CLUSTER_NAME} -o json | jq -r '.[].StackName')
 ROLE_NAME=$(aws cloudformation describe-stack-resources --stack-name $STACK_NAME | jq -r '.StackResources[] | select(.ResourceType=="AWS::IAM::Role") | .PhysicalResourceId')
 echo "export ROLE_NAME=${ROLE_NAME}" | tee -a ~/.bash_profile

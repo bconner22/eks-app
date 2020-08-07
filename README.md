@@ -21,4 +21,10 @@ Your local machine with admin AWS credentials
 
 ## How to use this repo
 
-`.scripts/oneclick.sh`
+`.scripts/oneclick.sh <what you'd like to name your cluster>`
+
+## Cleanup
+
+To delete the EKS cluster:
+`./scripts/eks_cleanup.sh <name of the cluster to delete>`
+

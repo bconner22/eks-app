@@ -1,4 +1,5 @@
 #!/bin/bash
+export CLUSTER_NAME=$1
 sudo curl --silent --location -o /usr/local/bin/kubectl   https://amazon-eks.s3.us-west-2.amazonaws.com/1.17.7/2020-07-08/bin/linux/amd64/kubectl
 sudo chmod +x /usr/local/bin/kubectl
 sudo pip install --upgrade awscli && hash -r
@@ -26,9 +27,9 @@ git clone https://github.com/brentley/ecsdemo-frontend.git
 git clone https://github.com/brentley/ecsdemo-nodejs.git
 git clone https://github.com/brentley/ecsdemo-crystal.git
 ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y 2>&1 >/dev/null
-aws ec2 import-key-pair --key-name "eks" --public-key-material file://~/.ssh/id_rsa.pub
-aws kms create-alias --alias-name alias/eks --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
-export MASTER_ARN=$(aws kms describe-key --key-id alias/eks --query KeyMetadata.Arn --output text)
+aws ec2 import-key-pair --key-name ${CLUSTER_NAME} --public-key-material file://~/.ssh/id_rsa.pub
+aws kms create-alias --alias-name alias/${CLUSTER_NAME} --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
+export MASTER_ARN=$(aws kms describe-key --key-id alias/${CLUSTER_NAME} --query KeyMetadata.Arn --output text)
 echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 sudo mv -v /tmp/eksctl /usr/local/bin

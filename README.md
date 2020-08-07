@@ -9,15 +9,12 @@
 
 Either:
 
-A Cloud9 instance with an admin IAM role attached
+An Amazon Linux Cloud9 instance with an admin IAM role named 'eksadmin' attached
 
 OR
 
-A Linux machine with an admin IAM role attached
+A Linux(RedHat/yum based) machine with an admin IAM named 'eksadmin' attached TODO case for multiple Linuxes
 
-OR 
-
-Your local machine with admin AWS credentials
 
 ## How to use this repo
 
